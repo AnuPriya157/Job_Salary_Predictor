@@ -27,7 +27,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =========================
-# CLEAN CSS (PROFESSIONAL)
+# CLEAN CSS
 # =========================
 st.markdown("""
 <style>
@@ -40,18 +40,10 @@ st.markdown("""
 /* Title */
 .title {
     text-align: center;
-    font-size: 38px;
+    font-size: 36px;
     font-weight: 600;
     color: #2c3e50;
-    margin-bottom: 20px;
-}
-
-/* Card */
-.card {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
 }
 
 /* Button */
@@ -92,10 +84,8 @@ company_options = get_options("company_size_")
 remote_options = get_options("remote_work_")
 
 # =========================
-# INPUT CARD
+# INPUT SECTION (NO CARD)
 # =========================
-st.markdown("<div class='card'>", unsafe_allow_html=True)
-
 col1, col2 = st.columns(2)
 
 with col1:
@@ -112,7 +102,8 @@ with col2:
 
 remote = st.selectbox("Remote Work", remote_options)
 
-st.markdown("</div>", unsafe_allow_html=True)
+# spacing
+st.markdown("###")
 
 # =========================
 # CREATE INPUT
