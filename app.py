@@ -4,13 +4,11 @@
 import streamlit as st
 import pickle
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 
 # =========================
 # PAGE CONFIG
 # =========================
-st.set_page_config(page_title="Salary Predictor", layout="wide")
+st.set_page_config(page_title="Salary Predictor", layout="centered")
 
 # =========================
 # LOAD FILES
@@ -20,51 +18,64 @@ scaler = pickle.load(open("scaler.pkl", "rb"))
 columns = pickle.load(open("columns.pkl", "rb"))
 
 # =========================
-# SIDEBAR
+# REMOVE SIDEBAR
 # =========================
-st.sidebar.title("⚙️ Settings")
-
-mode = st.sidebar.radio("Choose Theme", ["Light", "Dark"])
-page = st.sidebar.radio("Navigate", ["🏠 Prediction", "📊 Analytics"])
-
-# =========================
-# THEME CSS
-# =========================
-if mode == "Dark":
-    bg_color = "#0f172a"
-    text_color = "white"
-    card_color = "rgba(255,255,255,0.05)"
-else:
-    bg_color = "#f5f7fa"
-    text_color = "black"
-    card_color = "white"
-
-st.markdown(f"""
+st.markdown("""
 <style>
-[data-testid="stAppViewContainer"] {{
-    background-color: {bg_color};
-    color: {text_color};
-}}
-
-.card {{
-    background: {card_color};
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    transition: 0.3s ease;
-}}
-
-.card:hover {{
-    transform: scale(1.02);
-}}
-
-.title {{
-    text-align: center;
-    font-size: 40px;
-    font-weight: bold;
-}}
+[data-testid="stSidebar"] {display: none;}
 </style>
 """, unsafe_allow_html=True)
+
+# =========================
+# CLEAN CSS (PROFESSIONAL)
+# =========================
+st.markdown("""
+<style>
+
+/* Background */
+[data-testid="stAppViewContainer"] {
+    background: #f5f7fa;
+}
+
+/* Title */
+.title {
+    text-align: center;
+    font-size: 38px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+/* Card */
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* Button */
+button[kind="primary"] {
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 8px;
+    height: 45px;
+    width: 100%;
+    font-weight: 600;
+}
+
+/* Button hover */
+button[kind="primary"]:hover {
+    background-color: #45a049;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# =========================
+# TITLE
+# =========================
+st.markdown("<div class='title'>💼 Salary Prediction</div>", unsafe_allow_html=True)
 
 # =========================
 # HELPER FUNCTION
@@ -81,119 +92,88 @@ company_options = get_options("company_size_")
 remote_options = get_options("remote_work_")
 
 # =========================
-# PAGE 1: PREDICTION
+# INPUT CARD
 # =========================
-if page == "🏠 Prediction":
+st.markdown("<div class='card'>", unsafe_allow_html=True)
 
-    st.markdown("<div class='title'>💼 Salary Prediction App</div>", unsafe_allow_html=True)
+col1, col2 = st.columns(2)
 
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        exp = st.number_input("Experience (years)", 0, 30)
-        skills = st.number_input("Skills Count", 0, 50)
-
-    with col2:
-        cert = st.number_input("Certifications", 0, 20)
-        job = st.selectbox("Job Role", job_options)
-
-    with col3:
-        edu = st.selectbox("Education", edu_options)
-        loc = st.selectbox("Location", loc_options)
-
+with col1:
+    exp = st.number_input("Experience (years)", 0, 30)
+    skills = st.number_input("Skills Count", 0, 50)
+    job = st.selectbox("Job Role", job_options)
     ind = st.selectbox("Industry", ind_options)
+
+with col2:
+    cert = st.number_input("Certifications", 0, 20)
+    edu = st.selectbox("Education", edu_options)
+    loc = st.selectbox("Location", loc_options)
     company = st.selectbox("Company Size", company_options)
-    remote = st.selectbox("Remote Work", remote_options)
 
-    st.markdown("</div>", unsafe_allow_html=True)
+remote = st.selectbox("Remote Work", remote_options)
 
-    # =========================
-    # CREATE INPUT
-    # =========================
-    input_dict = {
-        "experience_years": exp,
-        "skills_count": skills,
-        "certifications": cert,
-        "job_title": job,
-        "education_level": edu,
-        "location": loc,
-        "industry": ind,
-        "company_size": company,
-        "remote_work": remote
-    }
-
-    input_df = pd.DataFrame([input_dict])
-
-    # FEATURE ENGINEERING
-    input_df['exp_squared'] = input_df['experience_years'] ** 2
-    input_df['skill_per_exp'] = input_df['skills_count'] / (input_df['experience_years'] + 1)
-    input_df['cert_per_skill'] = input_df['certifications'] / (input_df['skills_count'] + 1)
-
-    input_df['seniority'] = pd.cut(
-        input_df['experience_years'],
-        bins=[0, 2, 5, 10, 20],
-        labels=['Fresher', 'Junior', 'Mid', 'Senior']
-    )
-
-    input_df = pd.get_dummies(input_df)
-    input_df = input_df.reindex(columns=columns, fill_value=0)
-
-    num_cols = ['experience_years', 'skills_count', 'certifications',
-                'exp_squared', 'skill_per_exp', 'cert_per_skill']
-
-    input_df[num_cols] = scaler.transform(input_df[num_cols])
-
-    # =========================
-    # PREDICT
-    # =========================
-    if st.button("Predict Salary"):
-        prediction = model.predict(input_df)
-
-        st.toast("Prediction Ready! 🎉")
-
-        st.markdown(f"""
-        <div style="
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            color: white;
-            margin-top: 20px;
-        ">
-            <h2>💰 Predicted Salary</h2>
-            <h1>₹ {int(prediction[0])}</h1>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.snow()
+st.markdown("</div>", unsafe_allow_html=True)
 
 # =========================
-# PAGE 2: ANALYTICS
+# CREATE INPUT
 # =========================
-elif page == "📊 Analytics":
+input_dict = {
+    "experience_years": exp,
+    "skills_count": skills,
+    "certifications": cert,
+    "job_title": job,
+    "education_level": edu,
+    "location": loc,
+    "industry": ind,
+    "company_size": company,
+    "remote_work": remote
+}
 
-    st.markdown("<div class='title'>📊 Salary Insights</div>", unsafe_allow_html=True)
+input_df = pd.DataFrame([input_dict])
 
-    # Dummy data (or replace with your dataset)
-    exp_range = np.arange(1, 21)
-    salary_trend = 20000 + exp_range * 8000 + np.random.randint(-10000, 10000, 20)
+# =========================
+# FEATURE ENGINEERING
+# =========================
+input_df['exp_squared'] = input_df['experience_years'] ** 2
+input_df['skill_per_exp'] = input_df['skills_count'] / (input_df['experience_years'] + 1)
+input_df['cert_per_skill'] = input_df['certifications'] / (input_df['skills_count'] + 1)
 
-    fig, ax = plt.subplots()
-    ax.plot(exp_range, salary_trend)
-    ax.set_xlabel("Experience")
-    ax.set_ylabel("Salary")
-    ax.set_title("Salary vs Experience")
+input_df['seniority'] = pd.cut(
+    input_df['experience_years'],
+    bins=[0, 2, 5, 10, 20],
+    labels=['Fresher', 'Junior', 'Mid', 'Senior']
+)
 
-    st.pyplot(fig)
+# =========================
+# DUMMIES + ALIGN
+# =========================
+input_df = pd.get_dummies(input_df)
+input_df = input_df.reindex(columns=columns, fill_value=0)
 
-    # Bar chart
-    roles = ["Data Scientist", "Engineer", "Analyst"]
-    salaries = [120000, 90000, 70000]
+# =========================
+# SCALE
+# =========================
+num_cols = ['experience_years', 'skills_count', 'certifications',
+            'exp_squared', 'skill_per_exp', 'cert_per_skill']
 
-    fig2, ax2 = plt.subplots()
-    ax2.bar(roles, salaries)
-    ax2.set_title("Salary by Role")
+input_df[num_cols] = scaler.transform(input_df[num_cols])
 
-    st.pyplot(fig2)
+# =========================
+# PREDICTION
+# =========================
+if st.button("Predict Salary"):
+    prediction = model.predict(input_df)
+
+    st.markdown(f"""
+    <div style="
+        margin-top:20px;
+        background:#4CAF50;
+        padding:20px;
+        border-radius:10px;
+        text-align:center;
+        color:white;
+    ">
+        <h3>Predicted Salary</h3>
+        <h1>₹ {int(prediction[0])}</h1>
+    </div>
+    """, unsafe_allow_html=True)
