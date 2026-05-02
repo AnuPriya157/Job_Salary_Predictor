@@ -46,46 +46,39 @@ st.markdown("""
     margin-bottom: 25px;
     transition: all 0.3s ease;
 }
-
-/* Title hover */
 .title:hover {
     color: #4CAF50;
 }
 
-/* Input box */
-div[data-baseweb="input"] {
-    border-radius: 8px !important;
-    transition: all 0.3s ease;
+/* 🔥 INPUT BOX (ACTUAL FIX) */
+input, textarea {
+    transition: all 0.3s ease !important;
 }
 
-/* Input hover */
-div[data-baseweb="input"]:hover {
-    border-color: #4CAF50 !important;
-    background-color: #f0fff4;
+/* Hover effect */
+input:hover, textarea:hover {
+    border: 2px solid #4CAF50 !important;
+    background-color: #f0fff4 !important;
 }
 
-/* Select box */
-div[data-baseweb="select"] {
-    border-radius: 8px !important;
-    transition: all 0.3s ease;
-}
-
-/* Select hover */
-div[data-baseweb="select"]:hover {
-    border-color: #4CAF50 !important;
-    background-color: #f0fff4;
-}
-
-/* Number input buttons (+ -) hover */
-button {
-    transition: all 0.2s ease;
-}
-
-button:hover {
+/* Focus effect */
+input:focus, textarea:focus {
+    border: 2px solid #2e7d32 !important;
     background-color: #e8f5e9 !important;
 }
 
-/* Main Predict Button */
+/* 🔥 SELECTBOX FIX */
+div[role="combobox"] {
+    transition: all 0.3s ease !important;
+}
+
+/* Hover */
+div[role="combobox"]:hover {
+    border: 2px solid #4CAF50 !important;
+    background-color: #f0fff4 !important;
+}
+
+/* BUTTON */
 button[kind="primary"] {
     background-color: #4CAF50;
     color: white;
@@ -98,12 +91,11 @@ button[kind="primary"] {
 
 /* Button hover */
 button[kind="primary"]:hover {
-    background-color: #2e7d32;
-    color: #ffffff;
+    background-color: #2e7d32 !important;
     transform: translateY(-2px);
 }
 
-/* Result card */
+/* RESULT CARD */
 .result-card {
     transition: all 0.3s ease;
 }
