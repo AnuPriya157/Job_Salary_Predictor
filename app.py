@@ -6,6 +6,11 @@ import pickle
 import pandas as pd
 
 # =========================
+# PAGE CONFIG
+# =========================
+st.set_page_config(page_title="Salary Predictor", layout="centered")
+
+# =========================
 # LOAD FILES
 # =========================
 model = pickle.load(open("knn_model.pkl", "rb"))
@@ -13,14 +18,44 @@ scaler = pickle.load(open("scaler.pkl", "rb"))
 columns = pickle.load(open("columns.pkl", "rb"))
 
 # =========================
-# HELPER: EXTRACT OPTIONS FROM TRAINED COLUMNS
+# CUSTOM CSS
+# =========================
+st.markdown("""
+<style>
+body {
+    background-color: #f5f7fa;
+}
+.main {
+    background-color: #f5f7fa;
+}
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+.title {
+    text-align: center;
+    color: #6C63FF;
+    font-size: 40px;
+    font-weight: bold;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# =========================
+# TITLE
+# =========================
+st.markdown("<div class='title'>💼 Salary Prediction App</div>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
+
+# =========================
+# HELPER FUNCTION
 # =========================
 def get_options(prefix):
     opts = [col.replace(prefix, "") for col in columns if col.startswith(prefix)]
-    opts = sorted(list(set(opts)))
-    return opts
+    return ["Other"] + sorted(list(set(opts)))
 
-# Extract all possible options
 job_options = get_options("job_title_")
 edu_options = get_options("education_level_")
 loc_options = get_options("location_")
@@ -28,22 +63,11 @@ ind_options = get_options("industry_")
 company_options = get_options("company_size_")
 remote_options = get_options("remote_work_")
 
-# Add baseline category (lost due to drop_first=True)
-job_options = ["Other"] + job_options
-edu_options = ["Other"] + edu_options
-loc_options = ["Other"] + loc_options
-ind_options = ["Other"] + ind_options
-company_options = ["Other"] + company_options
-remote_options = ["Other"] + remote_options
+# =========================
+# INPUT CARD
+# =========================
+st.markdown("<div class='card'>", unsafe_allow_html=True)
 
-# =========================
-# TITLE
-# =========================
-st.title("💼 Salary Prediction App (KNN Improved)")
-
-# =========================
-# USER INPUT
-# =========================
 exp = st.number_input("Experience (years)", 0, 30)
 skills = st.number_input("Skills Count", 0, 50)
 cert = st.number_input("Certifications", 0, 20)
@@ -54,6 +78,8 @@ loc = st.selectbox("Location", loc_options)
 ind = st.selectbox("Industry", ind_options)
 company = st.selectbox("Company Size", company_options)
 remote = st.selectbox("Remote Work", remote_options)
+
+st.markdown("</div>", unsafe_allow_html=True)
 
 # =========================
 # CREATE INPUT
@@ -100,11 +126,31 @@ num_cols = ['experience_years', 'skills_count', 'certifications',
 input_df[num_cols] = scaler.transform(input_df[num_cols])
 
 # =========================
-# PREDICTION
+# PREDICTION BUTTON
 # =========================
 if st.button("Predict Salary"):
+
     prediction = model.predict(input_df)
-    st.success(f"💰 Predicted Salary: {int(prediction[0])}")
-    st.balloons()
+
+    # 🎉 Toast
+    st.toast("Prediction Ready! 🎉")
+
+    # 💎 Styled Result Card
+    st.markdown(f"""
+    <div style="
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        padding: 25px;
+        border-radius: 15px;
+        text-align: center;
+        color: white;
+        margin-top: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    ">
+        <h2>💰 Predicted Salary</h2>
+        <h1 style="font-size: 40px;">₹ {int(prediction[0])}</h1>
+        <p>Based on your profile</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ✨ Snow effect
     st.snow()
-    
