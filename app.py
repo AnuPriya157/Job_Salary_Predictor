@@ -106,3 +106,5 @@ if st.button("Predict Salary"):
     prediction = model.predict(input_df)
     st.success(f"💰 Predicted Salary: {int(prediction[0])}")
     st.balloons()
+    st.snow()
+    
