@@ -44,38 +44,48 @@ st.markdown("""
     font-weight: 600;
     color: #2c3e50;
     margin-bottom: 25px;
-    transition: 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 /* Title hover */
 .title:hover {
     color: #4CAF50;
-    transform: scale(1.02);
 }
 
-/* Input boxes */
+/* Input box */
 div[data-baseweb="input"] {
     border-radius: 8px !important;
-    transition: 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 /* Input hover */
 div[data-baseweb="input"]:hover {
-    box-shadow: 0 0 0 2px #4CAF50;
+    border-color: #4CAF50 !important;
+    background-color: #f0fff4;
 }
 
-/* Selectbox */
+/* Select box */
 div[data-baseweb="select"] {
     border-radius: 8px !important;
-    transition: 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 /* Select hover */
 div[data-baseweb="select"]:hover {
-    box-shadow: 0 0 0 2px #4CAF50;
+    border-color: #4CAF50 !important;
+    background-color: #f0fff4;
 }
 
-/* Button */
+/* Number input buttons (+ -) hover */
+button {
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background-color: #e8f5e9 !important;
+}
+
+/* Main Predict Button */
 button[kind="primary"] {
     background-color: #4CAF50;
     color: white;
@@ -88,17 +98,19 @@ button[kind="primary"] {
 
 /* Button hover */
 button[kind="primary"]:hover {
-    background-color: #45a049;
-    transform: scale(1.03);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    background-color: #2e7d32;
+    color: #ffffff;
+    transform: translateY(-2px);
 }
 
-/* Result card hover */
+/* Result card */
 .result-card {
-    transition: 0.3s ease;
+    transition: all 0.3s ease;
 }
 
+/* Result hover */
 .result-card:hover {
+    background-color: #388e3c !important;
     transform: scale(1.02);
 }
 
