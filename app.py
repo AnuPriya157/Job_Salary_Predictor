@@ -44,6 +44,35 @@ st.markdown("""
     font-weight: 600;
     color: #2c3e50;
     margin-bottom: 25px;
+    transition: 0.3s ease;
+}
+
+/* Title hover */
+.title:hover {
+    color: #4CAF50;
+    transform: scale(1.02);
+}
+
+/* Input boxes */
+div[data-baseweb="input"] {
+    border-radius: 8px !important;
+    transition: 0.3s ease;
+}
+
+/* Input hover */
+div[data-baseweb="input"]:hover {
+    box-shadow: 0 0 0 2px #4CAF50;
+}
+
+/* Selectbox */
+div[data-baseweb="select"] {
+    border-radius: 8px !important;
+    transition: 0.3s ease;
+}
+
+/* Select hover */
+div[data-baseweb="select"]:hover {
+    box-shadow: 0 0 0 2px #4CAF50;
 }
 
 /* Button */
@@ -54,16 +83,27 @@ button[kind="primary"] {
     height: 45px;
     width: 100%;
     font-weight: 600;
+    transition: all 0.3s ease;
 }
 
 /* Button hover */
 button[kind="primary"]:hover {
     background-color: #45a049;
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Result card hover */
+.result-card {
+    transition: 0.3s ease;
+}
+
+.result-card:hover {
+    transform: scale(1.02);
 }
 
 </style>
 """, unsafe_allow_html=True)
-
 # =========================
 # TITLE
 # =========================
